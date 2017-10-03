@@ -3,11 +3,12 @@ import proxy from 'express-http-proxy';
 // Middlewares
 import authenticate from '../../middlewares/authenticate';
 import isAdmin from '../../middlewares/isAdmin';
+import proxyMiddleware from '../../middlewares/proxy';
 
 // Start a basic server returning a json message: "Hello world" at 3000 port before this server
 
 export default (router) => {
-    router.get('/', authenticate, isAdmin, proxy('localhost:3000', {
+    router.get('/', authenticate, isAdmin, proxyMiddleware, proxy(function(req) { return req.URL; }, {
         // Pre proxy request changes
         proxyReqOptDecorator: function(proxyReqOpts, srcReq) {
             // you can update headers
@@ -18,7 +19,7 @@ export default (router) => {
         },
         // Post proxy request changes
         userResDecorator: function(proxyRes, proxyResData, userReq, userRes) {
-            let data = JSON.parse(proxyResData.toString('utf8'));
+            const data = JSON.parse(proxyResData.toString('utf8'));
             data.newProperty = 'exciting data';
             return JSON.stringify(data);
         }
