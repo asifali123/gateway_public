@@ -1,10 +1,8 @@
 {
     "parser": "babel-eslint",
     "env": {
-        "browser": true,
         "node": true,
         "es6": true,
-        "jquery": true,
         "mocha": true
     },
     "globals": {
@@ -36,7 +34,6 @@
             "templateStrings": true,
             "unicodeCodePointEscapes": true,
             "globalReturn": true,
-            "jsx": true,
             "experimentalObjectRestSpread": true
         }
     },
@@ -44,7 +41,6 @@
         "node"
     ],
     "rules": {
-
         "no-var": 2,
         "prefer-const": 1,
         "no-shadow": 2,

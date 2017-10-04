@@ -1,9 +1,9 @@
 // import 'babel-polyfill';
 
-// import the environment
-import environment from './config/environment';
-import dbHandler from './config/database';
-import errorHandler from './config/error';
+// import the env
+import env from './config/envHandler';
+import dbHandler from './config/dbHandler';
+import errorHandler from './middlewares/errorHandler';
 import routes from './routes';
 import logger from 'morgan';
 import helmet from 'helmet';
@@ -13,8 +13,10 @@ import bodyParser from 'body-parser';
 import express from 'express';
 const app = express();
 
-if (process.env.NODE_ENV === 'dev')
+// when env is dev, log via morgan
+if (process.env.NODE_ENV === 'dev'){
     app.use(logger('dev'));
+}
 
 // Use helmet
 app.use(helmet());
@@ -25,26 +27,29 @@ app.use(bodyParser.json({ limit: '50mb' }));
 // for parsing the url encoded data using qs library
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-dbHandler.openConnection().then((db_details) => {
-    console.log(`Db is connected to ${db_details.db.s.databaseName}`);
+// Load the routes
+routes(app);
 
-    // Listen app on port
-    app.listen(environment().PORT, () => {
-        console.log(`server listening on ${environment().PORT} `);
+// adding err handling middleware, this is a post-call middleware
+errorHandler(app);
+
+// open db connection before server starts
+dbHandler.openConnection().then((db_details) => {
+    console.log(`Db is connected to ${db_details.db.s.databaseName}`);``;
+
+    // start server on port
+    app.listen(env().PORT, () => {
+        console.log(`server listening on ${env().PORT} `);
     });
 
-    // Load the routes
-    routes(app);
-}, (e) => {
-    console.log('error in opening the connection', e);
+}, (err) => {
+    console.log('error in opening the connection', err);
 });
-
-errorHandler(app);
 
 // kill process when Ctrl+C is hit
 process.on('SIGINT', () => {
-    console.log('bye bye !');
     dbHandler.closeConnection(() => {
+        console.log('bye bye !');
         process.exit();
     });
 });
