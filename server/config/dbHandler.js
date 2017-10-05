@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import environment from './environment';
+import env from './envHandler';
 
-const dburl = environment().dbUrl;
+const dburl = env().dbUrl;
 
 const db = mongoose.connection;
 mongoose.Promise = global.Promise;
