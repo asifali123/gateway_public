@@ -25,15 +25,7 @@ export default (router) => {
     //     }
     // }));
 
-    router.get('/testing',(req,res, next) => {
-        try {
-            throw 'something';
-        } catch (error) {
-            console.log(error);
-            next(error);
-        }
-
-        // next();
-        // res.send(200);
+    router.get('/testing', (req, res, next) => {
+        res.status(200).send('Hello world');
     });
 };
