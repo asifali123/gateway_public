@@ -1,4 +1,4 @@
-import configuration from './config';
+import configuration from './../../config/config.json';
 
 export default () => {
     if (process.env.NODE_ENV === 'dev') {
