@@ -5,7 +5,7 @@ const router = express.Router();
 const routes = [
     require('./modules/mod1/mod1router')
 ];
-``;
+
 export default (app) => {
 
     // passing router object to all custom router object methods
