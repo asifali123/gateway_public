@@ -1,12 +1,17 @@
-// import 'babel-polyfill';
+if (process.env.NODE_ENV === 'prod') {
+    require('babel-polyfill');
+}
+
 
 // import the env
-import env from './config/envHandler';
-import dbHandler from './config/dbHandler';
+import env from './utils/envHandler';
+import dbHandler from './utils/dbHandler';
 import errorHandler from './middlewares/errorHandler';
 import routes from './routes';
 import logger from 'morgan';
 import helmet from 'helmet';
+
+import proxy from 'express-http-proxy';
 
 // Common imports
 import bodyParser from 'body-parser';
@@ -29,6 +34,19 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // Load the routes
 routes(app);
+
+// https://news.google.com/news/headlines?ned=us&hl=en
+// app.use('/proxy',proxy('localhost:8081/get_data'));
+
+// app.use('/proxy',proxy('localhost:8081/get_data',{
+//     // proxyReqPathResolver: function (req) {
+//     //     req.url += 'get_data';
+//     //     return req;
+//     // },
+//     userResDecorator: function (proxyRes,proxyResData,userReq,userRes) {
+//         return {success:true,someBullShit:'some text'};
+//     }
+// }));
 
 // adding err handling middleware, this is a post-call middleware
 errorHandler(app);
